@@ -6,29 +6,22 @@ on:
       - main
 
 jobs:
-  build-and-push:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
 
+    # -------------------------
+    # Build Backend Docker Image
+    # -------------------------
     - name: Log in to Docker Hub
       uses: docker/login-action@v2
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 
-    # --- Build Angular frontend first ---
-    - name: Install frontend dependencies
-      working-directory: ./frontend
-      run: npm install
-
-    - name: Build Angular frontend
-      working-directory: ./frontend
-      run: npm run build -- --prod
-
-    # --- Then build and push backend Docker image ---
     - name: Build and push backend image
       uses: docker/build-push-action@v4
       with:
@@ -36,10 +29,34 @@ jobs:
         push: true
         tags: riyaz04k/crud-dd-task-mean-app-backend:latest
 
-    # --- Build and push frontend Docker image ---
+    # -------------------------
+    # Build Frontend Docker Image
+    # -------------------------
+    - name: Install frontend dependencies
+      working-directory: ./frontend
+      run: npm install
+
+    - name: Build Angular frontend
+      working-directory: ./frontend
+      run: npm run build -- --configuration production
+
     - name: Build and push frontend image
       uses: docker/build-push-action@v4
       with:
         context: ./frontend
         push: true
         tags: riyaz04k/crud-dd-task-mean-app-frontend:latest
+
+    # -------------------------
+    # Deploy to EC2
+    # -------------------------
+    - name: SSH to EC2 and deploy
+      uses: appleboy/ssh-action@v0.1.9
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ubuntu
+        key: ${{ secrets.EC2_SSH_KEY }}
+        script: |
+          cd ~/crud-dd-task-mean-app
+          docker compose pull
+          docker compose up -d --build
