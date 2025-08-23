@@ -1,17 +1,15 @@
 const express = require("express");
-//const cors = require("cors");
-
 const app = express();
 
-// parse requests of content-type - application/json
+// parse requests
 app.use(express.json());
-
-// parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
 
 const db = require("./app/models");
+const mongoUrl = process.env.MONGO_URL || db.url;
+
 db.mongoose
-  .connect(db.url, {
+  .connect(mongoUrl, {
     useNewUrlParser: true,
     useUnifiedTopology: true
   })
@@ -19,8 +17,8 @@ db.mongoose
     console.log("Connected to the database!");
   })
   .catch(err => {
-    console.log("Cannot connect to the database!", err);
-    process.exit();
+    console.error("Cannot connect to the database!", err);
+    process.exit(1); // exit container if DB connection fails
   });
 
 // simple route
@@ -30,8 +28,9 @@ app.get("/", (req, res) => {
 
 require("./app/routes/turorial.routes")(app);
 
-// set port, listen for requests
+// set port, listen on all interfaces
 const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server is running on port ${PORT}.`);
 });
+
