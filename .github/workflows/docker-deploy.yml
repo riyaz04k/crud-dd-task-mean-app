@@ -27,14 +27,14 @@ jobs:
       with:
         context: ./backend
         push: true
-        tags: <your-dockerhub-username>/crud-dd-task-mean-app-backend:latest
+        tags: riyaz04k/crud-dd-task-mean-app-backend:latest
 
     - name: Build and push frontend image
       uses: docker/build-push-action@v4
       with:
         context: ./frontend
         push: true
-        tags: <your-dockerhub-username>/crud-dd-task-mean-app-frontend:latest
+        tags: riyaz04k/crud-dd-task-mean-app-frontend:latest
 
     - name: SSH to EC2 and deploy
       uses: appleboy/ssh-action@v0.1.9
