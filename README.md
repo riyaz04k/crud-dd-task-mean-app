@@ -1,27 +1,69 @@
-In this DevOps task, you need to build and deploy a full-stack CRUD application using the MEAN stack (MongoDB, Express, Angular 15, and Node.js). The backend will be developed with Node.js and Express to provide REST APIs, connecting to a MongoDB database. The frontend will be an Angular application utilizing HTTPClient for communication.  
+# CRUD MEAN App with Docker & CI/CD 
 
-The application will manage a collection of tutorials, where each tutorial includes an ID, title, description, and published status. Users will be able to create, retrieve, update, and delete tutorials. Additionally, a search box will allow users to find tutorials by title.
+This project is a **containerized MEAN stack CRUD application** deployed with **Docker Compose** and automated using **GitHub Actions CI/CD**.  
+It demonstrates containerization, continuous integration/deployment, and hosting on an AWS EC2 instance with Nginx.  
 
-## Project setup
+---
 
-### Node.js Server
+## Project Structure
+crud-dd-task-mean-app/
+│── backend/ # Express + MongoDB backend
+│── frontend/ # Angular frontend
+│── docker-compose.yml
+│── .github/workflows/ # CI/CD workflow files
+│── screenshots/ # Project screenshots
 
-cd backend
+yaml
+Copy
+Edit
 
-npm install
+---
 
-You can update the MongoDB credentials by modifying the `db.config.js` file located in `app/config/`.
+## Setup & Deployment
 
-Run `node server.js`
+### 1️⃣ Clone Repository
+```bash
+git clone https://github.com/riyaz04k/crud-dd-task-mean-app.git
+cd crud-dd-task-mean-app
+2️⃣ Run with Docker Compose
+bash
+Copy
+Edit
+docker compose up -d --build
+3️⃣ Access the Application
+Backend API → http://<EC2-IP>:3000
 
-### Angular Client
+Frontend Angular App → http://<EC2-IP>
 
-cd frontend
+🔄 CI/CD Workflow
+CI/CD is managed using GitHub Actions.
 
-npm install
+On every push:
 
-Run `ng serve --port 8081`
+Backend & frontend Docker images are built
 
-You can modify the `src/app/services/tutorial.service.ts` file to adjust how the frontend interacts with the backend.
+Images are pushed to Docker Hub
 
-Navigate to `http://localhost:8081/`
+EC2 server pulls updated images and redeploys with Docker Compose
+
+📄 Workflow file: .github/workflows/docker-deploy.yml
+
+🖼️ Screenshots
+✅ Docker & Services
+
+
+✅ CI/CD Pipeline
+
+
+✅ Frontend Application
+
+
+✅ Nginx Setup
+
+🌐 Infrastructure Details
+Hosted on AWS EC2 (Ubuntu 20.04)
+
+Containers managed via Docker Compose
+
+Nginx serves Angular frontend and can proxy backend requests
+
