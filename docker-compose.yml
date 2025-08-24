@@ -1,16 +1,18 @@
+version: "3.9"
+
 services:
   backend:
-    build: ./backend
+    image: riyaz04k/crud-dd-task-mean-app-backend:latest
     container_name: mean-backend
     ports:
-      - "3000:8080"          # Host port 3000 maps to container port 8080
+      - "3000:8080"
     environment:
       - MONGO_URL=mongodb://mongo:27017/meanapp
     depends_on:
       - mongo
 
   frontend:
-    build: ./frontend
+    image: riyaz04k/crud-dd-task-mean-app-frontend:latest
     container_name: mean-frontend
     ports:
       - "80:80"
